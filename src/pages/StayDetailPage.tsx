@@ -16,7 +16,7 @@ import {
 import PageHero from '@/components/layout/PageHero';
 import RoomCard from '@/components/stays/RoomCard';
 import UsefulLinkCard from '@/components/links/UsefulLinkCard';
-import { getStay, roomsByStay, linksByStay } from '@/data';
+import { getStay, roomsByStay, linksByStay, roomOccupancy } from '@/data';
 
 const Detail = ({
   icon: Icon,
@@ -57,8 +57,7 @@ const StayDetailPage = () => {
   }
 
   const rooms = roomsByStay(stay.id);
-  const totalCapacity = rooms.reduce((s, r) => s + (r.capacity ?? 0), 0);
-  const totalAssigned = rooms.reduce((s, r) => s + r.assignedPeople.length, 0);
+  const peoplePlaced = rooms.reduce((s, r) => s + roomOccupancy(r).people, 0);
   const nearby = [...(stay.nearby ?? []), ...linksByStay(stay.id)];
 
   return (
@@ -138,7 +137,7 @@ const StayDetailPage = () => {
             </h2>
             {rooms.length > 0 && (
               <p className="text-sm text-gray-500">
-                {rooms.length} camere · {totalAssigned}/{totalCapacity} locuri alocate
+                {rooms.length} camere · {peoplePlaced} persoane
               </p>
             )}
           </div>

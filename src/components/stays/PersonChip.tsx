@@ -1,14 +1,16 @@
-import { User } from 'lucide-react';
+import { User, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { personName } from '@/data';
 
-// A person tag. Resolves person ids to names. Unassigned placeholders
-// ("Persoană NN" / "TODO") render in a muted, dashed style.
+// A person / occupant tag. Resolves person ids to names. Couples ("X & Y")
+// get a plural icon. Unassigned placeholders render muted & dashed.
 const isPlaceholder = (name: string) => /^(persoană|todo)/i.test(name.trim());
+const isMulti = (name: string) => /[&,+]/.test(name);
 
 const PersonChip = ({ value }: { value: string }) => {
   const name = personName(value);
   const placeholder = isPlaceholder(name);
+  const Icon = isMulti(name) ? Users : User;
   return (
     <span
       className={cn(
@@ -18,7 +20,7 @@ const PersonChip = ({ value }: { value: string }) => {
           : 'bg-brand-green/10 text-brand-green',
       )}
     >
-      <User className="h-3 w-3" />
+      <Icon className="h-3 w-3" />
       {name}
     </span>
   );

@@ -121,14 +121,25 @@ export type Stay = {
   flexible?: boolean;
 };
 
+export type BedAssignment = {
+  /** Bed type, e.g. 'Pat dublu', 'Pat single', '2 paturi single', 'Canapea extensibilă'. */
+  bed: string;
+  /** Occupant(s) of this bed; couples joined ('Matei & Alexandra'). Empty = pat liber. */
+  people?: string;
+};
+
 export type Room = {
   id: string;
   stayId: string;
   name: string;
+  /** Optional grouping label (e.g. an apartment / unit within a property). */
+  group?: string;
   capacity?: number;
   beds?: string;
-  /** Person ids (see people.ts) or raw names. Empty/placeholder until assigned. */
-  assignedPeople: string[];
+  /** Per-bed breakdown. Preferred over `assignedPeople` when present. */
+  bedAssignments?: BedAssignment[];
+  /** Flat occupant list — fallback when there is no bed-level breakdown. */
+  assignedPeople?: string[];
   notes?: string;
 };
 

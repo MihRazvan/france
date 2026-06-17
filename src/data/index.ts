@@ -49,6 +49,38 @@ export const roomsByStay = (stayId: string): Room[] =>
 export const getRoom = (id: string): Room | undefined =>
   rooms.find((r) => r.id === id);
 
+/** Split an occupant label ('Matei & Alexandra') into individual names. */
+export const splitPeople = (s: string): string[] =>
+  s
+    .split(/\s*[&,+]\s*/)
+    .map((x) => x.trim())
+    .filter(Boolean);
+
+/** Occupant labels for a room (bed-level when available, else the flat list). */
+export const roomPeople = (room: Room): string[] => {
+  if (room.bedAssignments?.length) {
+    return room.bedAssignments
+      .filter((b) => b.people)
+      .map((b) => b.people as string);
+  }
+  return room.assignedPeople ?? [];
+};
+
+/** Occupancy stats: total/occupied beds and head count. */
+export const roomOccupancy = (room: Room) => {
+  const beds = room.bedAssignments ?? [];
+  if (beds.length === 0) {
+    const people = room.assignedPeople?.length ?? 0;
+    return { totalBeds: 0, occupiedBeds: people, people };
+  }
+  const occupiedBeds = beds.filter((b) => b.people).length;
+  const people = beds.reduce(
+    (n, b) => n + (b.people ? splitPeople(b.people).length : 0),
+    0,
+  );
+  return { totalBeds: beds.length, occupiedBeds, people };
+};
+
 // ---- Cars ----
 export const getCar = (id: string): Car | undefined =>
   cars.find((c) => c.id === id);

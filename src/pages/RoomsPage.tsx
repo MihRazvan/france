@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { Search, DoorOpen } from 'lucide-react';
 import PageHero from '@/components/layout/PageHero';
 import RoomCard from '@/components/stays/RoomCard';
-import { mainStays, roomsByStay, personName } from '@/data';
+import { mainStays, roomsByStay, roomPeople, personName } from '@/data';
 import { cn } from '@/lib/utils';
 
 const RoomsPage = () => {
@@ -18,7 +18,7 @@ const RoomsPage = () => {
       .filter((s) => !stayFilter || s.id === stayFilter)
       .map((s) => ({
         stay: s,
-        rooms: roomsByStay(s.id).filter((r) => matchesQuery(r.assignedPeople)),
+        rooms: roomsByStay(s.id).filter((r) => matchesQuery(roomPeople(r))),
       }))
       .filter((sec) => sec.rooms.length > 0 || !q);
   }, [stayFilter, q]);
@@ -28,7 +28,7 @@ const RoomsPage = () => {
       <PageHero
         eyebrow="Cine, unde"
         title="Camere"
-        subtitle="Distribuția camerelor pe cazări. Alocările sunt placeholder până le completați în date."
+        subtitle="Distribuția camerelor și a paturilor pe fiecare cazare. Manou 29 · Plage Valentin 21 · Lémeré 27 de persoane."
         breadcrumbs={[{ label: 'Acasă', to: '/' }, { label: 'Camere' }]}
       />
 
